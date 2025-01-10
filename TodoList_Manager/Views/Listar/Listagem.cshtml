@@ -1,0 +1,90 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<TodoList_Manager.Models.ListagemTarefas>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+
+<h1>Listagem de Tarefas</h1>
+<table class="table">
+    <thead>
+        <tr>
+            @* <th>ID</th> *@
+            <th>Tarefa</th>
+            <th>Prioridade</th>
+            <th>Tempo Programado</th>
+            <th>Agendamento</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            // Define a classe CSS condicionalmente com base na prioridade
+            var rowClass = "";
+            if (item.Prioridade == "Alta") rowClass = "bg-danger";
+            else if (item.Prioridade == "Media") rowClass = "bg-warning";
+            else if (item.Prioridade == "Baixa") rowClass = "bg-success";
+
+            <tr>
+                @* <td>@item.IdTarefa</td> *@
+                <td>@item.Tarefa</td>
+                <td class="@rowClass">@item.Prioridade</td>
+                <td >@item.Tempo</td>
+                <td >@item.Agendamento</td>
+                <td >@item.Status</td>
+                <td >
+                    <button type="button" class="btn btn-danger btn-sm mt-2 ml-2 border border-dark" onclick="confirmarExclusao(@item.IdTarefa)">Excluir</button>
+                    <button type="button" class="btn btn-info btn-sm mt-2 ml-2 border border-dark" onclick="window.location.href='@Url.Action("Cadastro", "Cadastro")'">Editar</button>
+                    <button type="button" class="btn">
+                        <img src="@Url.Content("~/images/start_icon.png")" alt="Botão Start" style="width: 20px; height: 20px;" />
+                    </button>
+                    <button type="button" class="btn">
+                        <img src="@Url.Content("~/images/pause_icon.png")" alt="Botão Pause" style="width: 20px; height: 20px;" />
+                    </button>
+                    <button type="button" class="btn">
+                        <img src="@Url.Content("~/images/stop_icon.png")" alt="Botão Stop" style="width: 20px; height: 20px;" />
+                    </button>
+                </td>
+            </tr>
+
+
+        }
+    </tbody>
+</table>
+
+<!-- Criação de popUp (Modal) -->
+<div class="modal" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Você tem certeza que deseja excluir esta tarefa?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">Não</button>
+                <button type="button" class="btn btn-lg btn-danger" id="confirmDeleteBtn">Sim</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-secondary btn-lg mt-2 ml-2" onclick="window.location.href='@Url.Action("Cadastro", "Cadastro")'"> Tela de Cadastro </button>
+
+<script>
+    function confirmarExclusao(id) {
+        tarefaId = id;
+
+        $('#confirmModal').modal('show');
+    }
+    $('#confirmDeleteBtn').click(function () {
+        window.location.href = '/Listar/Excluir/' + tarefaId;  
+    });
+</script>

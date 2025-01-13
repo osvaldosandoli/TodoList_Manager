@@ -14,6 +14,7 @@ namespace TodoList_Manager.Models
         public TimeOnly tempo { get; set; }
         public DateTime agendamento { get; set; }
         public int status { get; set; }
+        public TimeOnly? tempoGasto { get; set; }
 
     }
 }

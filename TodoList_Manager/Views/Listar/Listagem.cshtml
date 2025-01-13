@@ -1,12 +1,33 @@
-﻿@{
+﻿@using TodoList_Manager.Models
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model IEnumerable<TodoList_Manager.Models.ListagemTarefas>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+@try
+{
+    int conta = 0;
+    @foreach (var item in Model)
+    {
+        conta++;
+    }
 
-<h1>Listagem de Tarefas</h1>
+
+    <div class="d-flex flex-column">
+        <h1>Listagem de Tarefas</h1>
+        <h5 class="ms-auto text-end "> Total de tarefas: @conta </h5>
+    </div>
+
+}
+catch
+{
+    
+}
+
+
+
 <table class="table">
     <thead>
         <tr>
@@ -14,12 +35,14 @@
             <th>Tarefa</th>
             <th>Prioridade</th>
             <th>Tempo Programado</th>
+            <th>Tempo Gasto</th>
             <th>Agendamento</th>
             <th>Status</th>
             <th>Ações</th>
         </tr>
     </thead>
     <tbody>
+       
         @foreach (var item in Model)
         {
             // Define a classe CSS condicionalmente com base na prioridade
@@ -33,24 +56,33 @@
                 <td>@item.Tarefa</td>
                 <td class="@rowClass">@item.Prioridade</td>
                 <td >@item.Tempo</td>
+                <td>
+                    @if (item.TempoGasto == null) { <p>00:00</p> }
+                    else{ @item.TempoGasto }
+                </td>
+                   
                 <td >@item.Agendamento</td>
                 <td >@item.Status</td>
                 <td >
                     <button type="button" class="btn btn-danger btn-sm mt-2 ml-2 border border-dark" onclick="confirmarExclusao(@item.IdTarefa)">Excluir</button>
                     <button type="button" class="btn btn-info btn-sm mt-2 ml-2 border border-dark" onclick="window.location.href='@Url.Action("Cadastro", "Cadastro")'">Editar</button>
-                    <button type="button" class="btn">
+                    <button type="button" class="btn" onclick="startButton(@item.IdTarefa)">
                         <img src="@Url.Content("~/images/start_icon.png")" alt="Botão Start" style="width: 20px; height: 20px;" />
                     </button>
-                    <button type="button" class="btn">
+                    <button type="button" class="btn" onclick="pauseButton(@item.IdTarefa)">
                         <img src="@Url.Content("~/images/pause_icon.png")" alt="Botão Pause" style="width: 20px; height: 20px;" />
                     </button>
                     <button type="button" class="btn">
                         <img src="@Url.Content("~/images/stop_icon.png")" alt="Botão Stop" style="width: 20px; height: 20px;" />
                     </button>
+
+                   @*  <form action="/Listar/AtualizarTempo" method="post">
+                        <input type="hidden" name="idTarefa" value="@item.IdTarefa" />
+                        <input type="time" name="horaUtilizada" required />
+                        <button type="submit" class="btn btn-success">Play</button>
+                    </form> *@
                 </td>
             </tr>
-
-
         }
     </tbody>
 </table>
@@ -87,4 +119,36 @@
     $('#confirmDeleteBtn').click(function () {
         window.location.href = '/Listar/Excluir/' + tarefaId;  
     });
+
+    // Função para iniciar a tarefa
+    function startButton(idTarefa) {
+        $.ajax({
+            type: 'POST',
+            url: '/Listar/Play',  // Substitua pelo nome do seu controlador e ação
+            data: { idTarefa: idTarefa },
+            success: function (data) {
+                alert('Tarefa iniciada com sucesso! ');
+            },
+            error: function (xhr, status, error) {
+                alert('Erro ao iniciar a tarefa ');
+            }
+        });
+    }
+
+    // Função para pausar a tarefa
+    function pauseButton(idTarefa) {
+        $.ajax({
+            type: 'POST',
+            url: '/Listar/Pause',  // Substitua pelo nome do seu controlador e ação
+            data: { idTarefa: idTarefa },
+            success: function (data) {
+                // Exibir tempo de pausa após chamar o Pause
+                alert('Tarefa pausada com sucesso!');
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                alert('Erro ao pausar a tarefa ');
+            }
+        });
+    }
 </script>

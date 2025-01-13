@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using TodoList_Manager.Models;
 
@@ -13,6 +14,7 @@ namespace TodoList_Manager.Database
         public DbSet<Status> Status { get; set; }
         public DbSet<Prioridade> Prioridade { get; set; }
         public DbSet<ListagemTarefas> ListagemTarefas { get; set; }
+        public DbSet<TimerTarefa> TimerTarefa { get; set; }
 
         //Mapeamento para o Entity Framework
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,6 +38,20 @@ namespace TodoList_Manager.Database
             });
 
             modelBuilder.Entity<ListagemTarefas>().ToView("tarefas_view").HasNoKey();
+
+          
+        }
+
+        public async  Task AtualizarHoraAsync(TimeSpan horaUtilizada, TimeOnly? horaAntiga, int idTarefa)
+        {
+            var horaUtilizadaParam = new SqlParameter("@HoraUtilizada", horaUtilizada);
+            var horaAntigaParam = new SqlParameter("@HoraAntiga", horaAntiga ?? (object)DBNull.Value);
+            var idTarefaParam = new SqlParameter("@idTarefa", idTarefa);
+
+            await Database.ExecuteSqlRawAsync(
+            "EXEC AtualizaHora @HoraUtilizada, @HoraAntiga, @idTarefa",
+            /* EXEC AtualizaHora */ horaUtilizadaParam, horaAntigaParam, idTarefaParam
+        );
         }
 
     }

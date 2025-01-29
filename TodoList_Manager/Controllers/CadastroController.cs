@@ -16,11 +16,10 @@ public class CadastroController : Controller
 
     public IActionResult Cadastro()
     {
-       
 
         var viewModel = new CadastroViewModel
         {
-            StatusList =  ListarStatus(),
+            StatusList = ListarStatus(),
             PrioridadeList = ListarPrioridade()
         };
 
@@ -73,8 +72,8 @@ public class CadastroController : Controller
                 var tarefa = new Tarefa
                 {
                     tarefa = viewModel.Tarefa, 
-                    prioridade = viewModel.Prioridade, 
-                    tempo = TimeOnly.Parse(viewModel.Tempo), 
+                    prioridade = viewModel.Prioridade,
+                    tempo = TimeOnly.Parse(viewModel.Tempo),
                     agendamento = viewModel.Agendamento, 
                     status = viewModel.Status 
 
@@ -99,5 +98,9 @@ public class CadastroController : Controller
             TempData["AlertMessage"] = "Erro ao cadastrar: Verifique os erros e tente novamente.";
             return RedirectToAction("Cadastro"); 
         }
+    }
+    public IActionResult Editar()
+    {
+        return RedirectToAction("Editar", "Editar");
     }
 }

@@ -10,6 +10,7 @@ namespace TodoList_Manager.Database
         public Config(DbContextOptions<Config> options) : base(options) { }
 
         // Adicione os DbSet para suas tabelas
+        public DbSet<Tarefa> IdTarefa { get; set; }
         public DbSet<Tarefa> Tarefa { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Prioridade> Prioridade { get; set; }

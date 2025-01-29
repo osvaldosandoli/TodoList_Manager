@@ -5,6 +5,7 @@ namespace TodoList_Manager.Models
 {
     public class CadastroViewModel
     {
+        public int Id { get; set; }
         // Correspondendo os nomes da Tarefa diretamente
         [Required(ErrorMessage = "O título da tarefa é obrigatório.")]
         public string Tarefa { get; set; } // 'tarefa' da model

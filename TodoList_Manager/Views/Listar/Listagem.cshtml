@@ -14,7 +14,6 @@
         conta++;
     }
 
-
     <div class="d-flex flex-column">
         <h1>Listagem de Tarefas</h1>
         <h5 class="ms-auto text-end "> Total de tarefas: @conta </h5>
@@ -25,8 +24,6 @@ catch
 {
     
 }
-
-
 
 <table class="table">
     <thead>
@@ -65,7 +62,7 @@ catch
                 <td >@item.Status</td>
                 <td >
                     <button type="button" class="btn btn-danger btn-sm mt-2 ml-2 border border-dark" onclick="confirmarExclusao(@item.IdTarefa)">Excluir</button>
-                    <button type="button" class="btn btn-info btn-sm mt-2 ml-2 border border-dark" onclick="window.location.href='@Url.Action("Cadastro", "Cadastro")'">Editar</button>
+                    <button type="button" class="btn btn-info btn-sm mt-2 ml-2 border border-dark" onclick="window.location.href='@Url.Action("Editar", "Editar",new { IdTarefa  = item.IdTarefa })'">Editar</button>
                     <button type="button" class="btn" onclick="startButton(@item.IdTarefa)">
                         <img src="@Url.Content("~/images/start_icon.png")" alt="Botão Start" style="width: 20px; height: 20px;" />
                     </button>
@@ -75,12 +72,6 @@ catch
                     <button type="button" class="btn">
                         <img src="@Url.Content("~/images/stop_icon.png")" alt="Botão Stop" style="width: 20px; height: 20px;" />
                     </button>
-
-                   @*  <form action="/Listar/AtualizarTempo" method="post">
-                        <input type="hidden" name="idTarefa" value="@item.IdTarefa" />
-                        <input type="time" name="horaUtilizada" required />
-                        <button type="submit" class="btn btn-success">Play</button>
-                    </form> *@
                 </td>
             </tr>
         }

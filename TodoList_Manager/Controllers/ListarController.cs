@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Concurrent;
@@ -11,7 +12,7 @@ namespace TodoList_Manager.Controllers
     {
 
         private readonly Config _context;
-        
+
 
         public ListarController(Config context)
         {
@@ -21,7 +22,7 @@ namespace TodoList_Manager.Controllers
         {
             var listagem = _context.ListagemTarefas.OrderBy(L => L.Agendamento).ToList();
             return View(listagem);
-           
+
         }
 
         public ActionResult Excluir(int id)
@@ -62,7 +63,7 @@ namespace TodoList_Manager.Controllers
                 // Retorne uma resposta de erro adequada
                 return StatusCode(500, "Ocorreu um erro ao acessar o banco de dados.");
             }
-            
+
             var timePlay = new TimerTarefa
             {
                 idTarefa = idTarefa,
@@ -70,12 +71,12 @@ namespace TodoList_Manager.Controllers
                 endTime = null,
                 dtHrResgis = DataHoraAtual,
             };
-           
+
             _context.TimerTarefa.Add(timePlay);
             _context.SaveChanges();
 
             return Ok(new { message = "Tarefa iniciada com sucesso!", startTime = timeIni });
-           
+
         }
         [HttpPost]
         public async Task<IActionResult> Pause(int idTarefa)
@@ -88,15 +89,15 @@ namespace TodoList_Manager.Controllers
 
             if (timerTarefa != null)
             {
-                    timerTarefa.endTime = timeFim;
-                
+                timerTarefa.endTime = timeFim;
+
                 _context.SaveChanges();
 
                 await AtualizarTempo(idTarefa);
-               // return Ok(new { message = "Tarefa pausada com sucesso!", timeFim }); 
+                // return Ok(new { message = "Tarefa pausada com sucesso!", timeFim }); 
                 return RedirectToAction("Listagem");
             }
-           
+
             return NotFound(new { message = "Tarefa não encontrada ou já pausada." });
         }
 
@@ -154,6 +155,11 @@ namespace TodoList_Manager.Controllers
 
             return RedirectToAction("Listagem");
         }
+
+
+        //teste editar
+
+      
     }
 
 }

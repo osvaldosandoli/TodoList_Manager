@@ -9,7 +9,6 @@ namespace TodoList_Manager.Database
     {
         public Config(DbContextOptions<Config> options) : base(options) { }
 
-        // Adicione os DbSet para suas tabelas
         public DbSet<Tarefa> IdTarefa { get; set; }
         public DbSet<Tarefa> Tarefa { get; set; }
         public DbSet<Status> Status { get; set; }
@@ -24,10 +23,10 @@ namespace TodoList_Manager.Database
 
             modelBuilder.Entity<Status>(entity =>
             {
-                entity.HasKey(s => s.statusID); // Usando a propriedade StatusID diretamente
+                entity.HasKey(s => s.statusID);
                 entity.Property(s => s.descricaoStatus)
                       .HasColumnName("descricaoStatus")
-                      .HasMaxLength(100); // Mapear a propriedade DescricaoStatus
+                      .HasMaxLength(100);
             });
 
             modelBuilder.Entity<Prioridade>(entity =>
@@ -52,7 +51,7 @@ namespace TodoList_Manager.Database
             await Database.ExecuteSqlRawAsync(
             "EXEC AtualizaHora @HoraUtilizada, @HoraAntiga, @idTarefa",
             /* EXEC AtualizaHora */ horaUtilizadaParam, horaAntigaParam, idTarefaParam
-        );
+            );
         }
 
     }

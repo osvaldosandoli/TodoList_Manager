@@ -50,14 +50,15 @@
     <div class="form-group">
         <label for="status">Status</label>
         <select asp-for="Status" class="form-control" id="status" name="Status">
-            <option value="">Selecione um Status</option>
-            @if (Model?.StatusList != null)
+            <option value="1" selected>Agendada</option>
+            @* @if (Model?.StatusList != null)
             {
                 @foreach (var status in Model.StatusList)
                 {
                     <option value="@status.Value">@status.Text</option>
                 }
-            }
+            } *@
+            
             
         </select>
     </div>

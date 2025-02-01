@@ -9,14 +9,29 @@
 @try
 {
     int conta = 0;
+    int fina = 0;
     @foreach (var item in Model)
     {
         conta++;
+        if (item.Status == "Finalizada") // Comparação correta
+        {
+            fina++;
+        }
     }
 
     <div class="d-flex flex-column">
         <h1>Listagem de Tarefas</h1>
-        <h5 class="ms-auto text-end "> Total de tarefas: @conta </h5>
+        <h3 class="ms-auto text-end "> Total de tarefas: @conta </h3>
+        <h5 class="ms-auto text-end "> Total de tarefas Pendentes: @(conta - @fina) </h5>
+        <div class="d-flex flex-row">
+            <h5 class="ms-auto mt-1 text-end ">
+                Total de tarefas Finalizadas: @fina
+            </h5>
+            <button id="toggleButton" class="btn btn-sm btn-secondary ms-2">Ocultar Finalizadas</button>
+        </div>
+
+
+        
     </div>
 
 }
@@ -24,7 +39,6 @@ catch
 {
     
 }
-
 <table class="table">
     <thead>
         <tr>
@@ -42,16 +56,33 @@ catch
        
         @foreach (var item in Model)
         {
-            // Define a classe CSS condicionalmente com base na prioridade
-            var rowClass = "";
-            if (item.Prioridade == "Alta") rowClass = "bg-danger";
-            else if (item.Prioridade == "Media") rowClass = "bg-warning";
-            else if (item.Prioridade == "Baixa") rowClass = "bg-success";
+           
+            @*     if (item.Status == "Finalizada") // Comparação correta
+             {
+                 continue; // Pula a linha com o Status finalizada.
+             } 
+         *@
 
-            <tr>
+            // Define a classe CSS condicionalmente com base na prioridade
+            var colPrioridade = "";
+            var colStatus = "";
+            if (item.Prioridade == "Alta") colPrioridade = "bg-danger";
+            else if (item.Prioridade == "Media") colPrioridade = "bg-warning";
+            else if (item.Prioridade == "Baixa") colPrioridade = "bg-success";
+
+            if (item.Status == "Em Atraso") colStatus = "bg-danger";
+            else if (item.Status == "Agendada") colStatus = "bg-success";
+            else if (item.Status == "Em andamento") colStatus = "bg-primary";
+            else if (item.Status == "Finalizada") colStatus = "";
+
+
+
+            string classeOcultar = item.Status == "Finalizada" ? "finalizada" : "";
+
+            <tr class="@classeOcultar">
                 @* <td>@item.IdTarefa</td> *@
                 <td>@item.Tarefa</td>
-                <td class="@rowClass">@item.Prioridade</td>
+                <td class="@colPrioridade">@item.Prioridade</td>
                 <td >@item.Tempo</td>
                 <td>
                     @if (item.TempoGasto == null) { <p>00:00</p> }
@@ -59,7 +90,7 @@ catch
                 </td>
                    
                 <td >@item.Agendamento</td>
-                <td >@item.Status</td>
+                <td class="@colStatus">@item.Status</td>
                 <td >
                     <button type="button" class="btn btn-danger btn-sm mt-2 ml-2 border border-dark" onclick="confirmarExclusao(@item.IdTarefa)">Excluir</button>
                     <button type="button" class="btn btn-info btn-sm mt-2 ml-2 border border-dark" onclick="window.location.href='@Url.Action("Editar", "Editar",new { IdTarefa  = item.IdTarefa })'">Editar</button>
@@ -69,9 +100,10 @@ catch
                     <button type="button" class="btn" onclick="pauseButton(@item.IdTarefa)">
                         <img src="@Url.Content("~/images/pause_icon.png")" alt="Botão Pause" style="width: 20px; height: 20px;" />
                     </button>
-                    <button type="button" class="btn">
+                    <button type="button" class="btn" onclick="location.href='@Url.Action("Concluir", "Listar", new { IdTarefa = item.IdTarefa })'">
                         <img src="@Url.Content("~/images/stop_icon.png")" alt="Botão Stop" style="width: 20px; height: 20px;" />
                     </button>
+                    
                 </td>
             </tr>
         }
@@ -98,10 +130,23 @@ catch
         </div>
     </div>
 </div>
-
-<button type="button" class="btn btn-secondary btn-lg mt-2 ml-2" onclick="window.location.href='@Url.Action("Cadastro", "Cadastro")'"> Tela de Cadastro </button>
+<div class="text-center mt-2">
+    <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='@Url.Action("Cadastro", "Cadastro")'"> Tela de Cadastro </button>
+</div>
 
 <script>
+    $(document).ready(function () {
+        let oculto = true; // Estado inicial
+
+        $("#toggleButton").click(function () {
+            oculto = !oculto; // Alterna estado
+            $(".finalizada").toggle(oculto); // Esconde ou mostra as tarefas finalizadas
+
+            // Atualiza o texto do botão
+            $(this).text(oculto ? "Ocultar Finalizadas" : "Mostrar Finalizadas");
+        });
+    });
+
     function confirmarExclusao(id) {
         tarefaId = id;
 
@@ -142,4 +187,5 @@ catch
             }
         });
     }
+    
 </script>
